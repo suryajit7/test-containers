@@ -1,4 +1,4 @@
-# **Test Microservices based Application with Test Containers**
+# **Test Microservices based Application with Dockerized Containers**
 
 **Overview:**
 
