@@ -1,7 +1,7 @@
 package com.testcontainers.core.repo;
 
 
-import com.testcontainers.core.entity.Hero;
+import com.testcontainers.core.entity.Shinobi;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -16,20 +16,20 @@ public class HeroClassicJpaRepository {
     private EntityManager em;
 
     @Transactional
-    public void addHero(Hero hero) {
-        em.persist(hero);
+    public void addHero(Shinobi shinobi) {
+        em.persist(shinobi);
     }
 
-    public Collection<Hero> allHeros() {
-        return em.createQuery("Select hero FROM Hero hero", Hero.class).getResultList();
+    public Collection<Shinobi> allHeros() {
+        return em.createQuery("Select hero FROM Hero hero", Shinobi.class).getResultList();
     }
 
-    public Collection<Hero> findHerosBySearchCriteria(String searchCriteria) {
+    public Collection<Shinobi> findHerosBySearchCriteria(String searchCriteria) {
         return em.createQuery("SELECT hero FROM Hero hero " +
                                 "where hero.city LIKE :searchCriteria OR " +
                                 "hero.name LIKE :searchCriteria OR " +
                                 "hero.universum = :searchCriteria",
-                        Hero.class)
+                        Shinobi.class)
                 .setParameter("searchCriteria", searchCriteria).getResultList();
     }
 }

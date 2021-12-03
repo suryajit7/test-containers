@@ -1,15 +1,15 @@
 package com.testcontainers.core;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
-import com.testcontainers.core.entity.ComicUniversum;
-import com.testcontainers.core.entity.Hero;
-import com.testcontainers.core.repo.HeroClassicJDBCRepository;
+import com.testcontainers.core.entity.HiddenVillage;
+import com.testcontainers.core.entity.Shinobi;
+import com.testcontainers.core.repo.ShinobiClassicJDBCRepository;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
+import org.testcontainers.containers.startupcheck.IsRunningStartupCheckStrategy;
 import org.testcontainers.ext.ScriptUtils;
 import org.testcontainers.jdbc.JdbcDatabaseDelegate;
 import org.testcontainers.junit.jupiter.Container;
@@ -26,19 +26,16 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 public class GenericContainerTest {
 
     @Container
-    private final MySQLContainer database = new MySQLContainer("mysql")
-            .withUsername("test")
-            .withPassword("test");
+    private final MySQLContainer database = new MySQLContainer("mysql");
 
-    private HeroClassicJDBCRepository repositoryUnderTest;
+    private ShinobiClassicJDBCRepository repositoryUnderTest;
 
     private DataSource dataSource;
 
     @BeforeAll
     public void beforeSetup(){
-        database.withStartupCheckStrategy(new IndefiniteWaitOneShotStartupCheckStrategy());
+        database.withStartupCheckStrategy(new IsRunningStartupCheckStrategy());
         database.getLogs();
-        dataSource = getDataSource();
     }
 
     @Test
@@ -46,13 +43,13 @@ public class GenericContainerTest {
 
         ScriptUtils.runInitScript(new JdbcDatabaseDelegate(database, ""),"data.sql");
 
-        repositoryUnderTest = new HeroClassicJDBCRepository(dataSource);
+        repositoryUnderTest = new ShinobiClassicJDBCRepository(getDataSource());
 
-        repositoryUnderTest.addHero(new Hero("Batman", "Gotham City", ComicUniversum.DC_COMICS));
+        repositoryUnderTest.addNinja(new Shinobi("Batman", "Gotham City", HiddenVillage.KONOHAGAKURE));
 
-        Collection<Hero> heroes = repositoryUnderTest.allHeros();
+        Collection<Shinobi> shinobis = repositoryUnderTest.allShinobis();
 
-        assertThat(heroes).hasSize(1);
+        assertThat(shinobis).hasSize(1);
     }
 
     @NotNull
